@@ -22,5 +22,9 @@ public class PlayerVisual : MonoBehaviour
 
         bool isRunning = moveInput.magnitude > 0.1f;
         animator.SetBool("IsRunning", isRunning);
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            animator.SetTrigger("Attack");
+        }
     }
 }

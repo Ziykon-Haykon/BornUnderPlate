@@ -12,6 +12,12 @@ public class Cube : MonoBehaviour
     public int MaxHP => maxHP;
     private Rigidbody2D rb;
     [SerializeField] private Transform altarSpawnPoint;
+    private Transform player;
+    [SerializeField] private float chaseDistance = 5f;
+    [SerializeField] private float attackDistance = 1.5f;
+    private float lastAttackTime;
+    [SerializeField] private float attackCooldown = 1.0f;
+    [SerializeField] private int damage = 50;
 
     private void Awake()
     {
@@ -46,10 +52,24 @@ public class Cube : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
+    
         if (currentHP <= 0)
         {
-
             Respawn();
+        }
+    }
+
+    public void Attack()
+    {
+        player = GameObject.FindGameObjectWithTag("Ghost")?.transform;
+        var distance = Vector2.Distance(transform.position, player.position);
+        if (distance <= attackDistance)
+        {
+            if (Time.time - lastAttackTime > attackCooldown)
+            {
+                player.GetComponent<Ghost>().TakeDamage(damage);
+                lastAttackTime = Time.time;
+            }
         }
     }
 
@@ -57,7 +77,7 @@ public class Cube : MonoBehaviour
     {
         currentHP = maxHP;
         rb.position = altarSpawnPoint.position;
-        // Можно добавить восстановление скорости, анимацию и т.д.
+
     }
 
 }
